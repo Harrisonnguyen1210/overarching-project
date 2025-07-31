@@ -1,0 +1,52 @@
+services:
+  server:
+    build: server
+    restart: unless-stopped
+    volumes:
+      - ./server:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - project.env
+    depends_on:
+      - database
+
+  database:
+    container_name: postgresql_database
+    image: postgres:17.0
+    restart: unless-stopped
+    env_file:
+      - project.env
+    command: >
+      postgres
+      -c shared_preload_libraries=auto_explain,pg_stat_statements
+      -c auto_explain.log_min_duration=10
+
+  database-migrations:
+      image: flyway/flyway:10
+      env_file:
+        - project.env
+      depends_on:
+        - database
+      volumes:
+        - ./database-migrations:/flyway/sql
+      command: -connectRetries=60 -baselineOnMigrate=true migrate
+
+  redis:
+    image: redis:7.4.2
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+  grader:
+    build: grader
+    restart: unless-stopped
+    volumes:
+      - ./grader:/app
+    env_file:
+      - project.env
+    depends_on:
+      - redis
+      - database
+    ports:
+      - 8001:8000
