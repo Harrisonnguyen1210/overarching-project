@@ -14,7 +14,6 @@ services:
       - "traefik.http.routers.server-router.rule=PathPrefix(`/api`)"
       - "traefik.http.services.server-service.loadbalancer.server.port=8000"
 
-
   database:
     container_name: postgresql_database
     image: postgres:17.0
@@ -54,6 +53,13 @@ services:
       - database
     ports:
       - 8001:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grader-api.rule=PathPrefix(`/grader-api`)"
+      - "traefik.http.routers.grader-api.middlewares=grader-api-replacepath"
+      - "traefik.http.middlewares.grader-api-replacepath.replacePathRegex.regex=^/grader-api(.*)"
+      - "traefik.http.middlewares.grader-api-replacepath.replacePathRegex.replacement=/api$$1"
+      - "traefik.http.services.grader-api.loadbalancer.server.port=8000"
 
   client:
     build: client

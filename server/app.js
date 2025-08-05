@@ -77,4 +77,38 @@ app.post("/api/exercises/:id/submissions", async (c) => {
   return c.json(submission);
 });
 
+app.get("/api/exercises/:id", async (c) => {
+  const exerciseId = c.req.param("id");
+
+  // Query the exercise by ID
+  const [exercise] = await sql`
+    SELECT id, title, description
+    FROM exercises
+    WHERE id = ${exerciseId}
+  `;
+
+  if (!exercise) {
+    return c.body(null, 404); // 404 if not found
+  }
+
+  return c.json(exercise);
+});
+
+app.get("/api/submissions/:id/status", async (c) => {
+  const submissionId = c.req.param("id");
+
+  // Query the submission status
+  const [submission] = await sql`
+    SELECT grading_status, grade
+    FROM exercise_submissions
+    WHERE id = ${submissionId}
+  `;
+
+  if (!submission) {
+    return c.body(null, 404); // 404 if not found
+  }
+
+  return c.json(submission);
+});
+
 export default app;
