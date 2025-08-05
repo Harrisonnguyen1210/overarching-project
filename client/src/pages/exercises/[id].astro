@@ -1,0 +1,12 @@
+---
+const { id } = Astro.params;
+import TextAnalyzer from "../../components/TextAnalyzer.svelte";
+export const prerender = false;
+---
+
+<html>
+  <body>
+    <p>Exercise {id}</p>
+    <TextAnalyzer client:load />
+  </body>
+</html>
