@@ -6,4 +6,4 @@ import TextAnalyzer from "../../components/TextAnalyzer.svelte";
 ---
 
 <ExerciseDetail exerciseId={id} client:only />
-<TextAnalyzer client:only />
+<TextAnalyzer exerciseId={id} client:only />

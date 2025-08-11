@@ -1,5 +1,5 @@
 <script>
-    export let exerciseId;
+    const { exerciseId } = $props();
     import { useExerciseState } from "../states/exerciseState.svelte.js";
     const exerciseState = useExerciseState();
 
