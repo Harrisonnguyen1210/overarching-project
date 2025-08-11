@@ -12,7 +12,3 @@
 <textarea bind:value={text}></textarea>
 <button onclick={analyzeText}>Submit</button>
 
-{#if charCount > 0}
-    <p>Characters: {charCount}</p>
-    <p>ifs: {ifCount}</p>
-{/if}

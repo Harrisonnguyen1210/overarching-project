@@ -1,0 +1,7 @@
+---
+export const prerender = false;
+const { id } = Astro.params;
+import ExercisesList from "../../components/ExercisesList.svelte";
+---
+
+<ExercisesList languageId={id} client:only />

@@ -12,6 +12,6 @@
     "@astrojs/svelte": "^7.1.0",
     "@deno/astro-adapter": "^0.3.1",
     "astro": "^5.11.0",
-    "svelte": "^5.37.2"
+    "svelte": "^5.37.3"
   }
 }
