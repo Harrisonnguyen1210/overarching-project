@@ -4,12 +4,13 @@ import { logger } from "@hono/hono/logger";
 import postgres from "postgres";
 import { cache } from "@hono/hono/cache";
 import { Redis } from "ioredis";
+import { auth } from "./auth.js";
 
 const app = new Hono();
 const sql = postgres();
 const QUEUE_NAME = "submissions";
-
 let redis;
+
 if (Deno.env.get("REDIS_HOST")) {
   redis = new Redis(
     Number.parseInt(Deno.env.get("REDIS_PORT")),
@@ -19,8 +20,25 @@ if (Deno.env.get("REDIS_HOST")) {
   redis = new Redis(6379, "redis");
 }
 
+const requireAuth = (c, next) => {
+  const user = c.get("user");
+  if (!user) {
+    c.status(401);
+    return c.json({ message: "Unauthorized" });
+  }
+  return next();
+};
+
+app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 app.use("/*", cors());
 app.use("/*", logger());
+app.use("*", async (c, next) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (session) c.set("user", session.user);
+  return next();
+});
+app.use("/api/exercises/:id/submissions", requireAuth);
+app.use("/api/submissions/:id/status", requireAuth);
 
 app.get(
   "/api/languages",
