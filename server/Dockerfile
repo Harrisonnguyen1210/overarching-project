@@ -1,4 +1,4 @@
-FROM denoland/deno:alpine-2.0.2
+FROM denoland/deno:alpine-2.2.3
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ RUN DENO_FUTURE=1 deno install
 
 COPY . .
 
-CMD [ "run", "--allow-env", "--allow-net", "--watch", "app-run.js" ]
+CMD [ "run", "--allow-env", "--allow-net", "--allow-read", "--unstable-otel", "--watch", "app-run.js" ]
