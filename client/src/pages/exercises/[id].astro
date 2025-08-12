@@ -1,9 +1,7 @@
 ---
 export const prerender = false;
 const { id } = Astro.params;
-import ExerciseDetail from "../../components/ExerciseDetail.svelte";
-import TextAnalyzer from "../../components/TextAnalyzer.svelte";
+import ExercisePage from "../../components/ExercisePage.svelte";
 ---
 
-<ExerciseDetail exerciseId={id} client:only />
-<TextAnalyzer exerciseId={id} client:only />
+<ExercisePage exerciseId={id} client:only />

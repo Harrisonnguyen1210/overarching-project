@@ -2,6 +2,8 @@
 export const prerender = false;
 const { id } = Astro.params;
 import ExercisesList from "../../components/ExercisesList.svelte";
+import UserInfo from "../../components/auth/UserInfo.svelte";
 ---
 
+<UserInfo client:only />
 <ExercisesList languageId={id} client:only />

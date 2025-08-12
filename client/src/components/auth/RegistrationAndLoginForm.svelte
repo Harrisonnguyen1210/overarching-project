@@ -1,5 +1,5 @@
 <script>
-    import { authClient } from "../../../utils/auth.js";
+    import { authClient } from "../../utils/auth.js";
     let { isLoginForm = false } = $props();
     const authFun = isLoginForm
         ? authClient.signIn.email
