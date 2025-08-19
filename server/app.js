@@ -84,12 +84,14 @@ app.post("/api/exercises/:id/submissions", async (c) => {
     return c.json({ error: "source_code is required" }, 400);
   }
 
+  const user = c.get("user");
   // Insert into database
   const [submission] = await sql`
-      INSERT INTO exercise_submissions (exercise_id, source_code)
-      VALUES (${exerciseId}, ${body.source_code})
-      RETURNING id, exercise_id, grading_status, grade, created_at
-    `;
+  INSERT INTO exercise_submissions (exercise_id, source_code, user_id)
+  VALUES (${exerciseId}, ${body.source_code}, ${user.id})
+  RETURNING id, exercise_id, user_id, grading_status, grade, created_at
+`;
+
   await redis.lpush(QUEUE_NAME, submission.id);
 
   return c.json(submission);
@@ -114,13 +116,14 @@ app.get("/api/exercises/:id", async (c) => {
 
 app.get("/api/submissions/:id/status", async (c) => {
   const submissionId = c.req.param("id");
+  const user = c.get("user");
 
   // Query the submission status
   const [submission] = await sql`
-    SELECT grading_status, grade
-    FROM exercise_submissions
-    WHERE id = ${submissionId}
-  `;
+  SELECT grading_status, grade
+  FROM exercise_submissions
+  WHERE id = ${submissionId} AND user_id = ${user.id}
+`;
 
   if (!submission) {
     return c.body(null, 404); // 404 if not found
