@@ -95,3 +95,14 @@ services:
       - "4318:4318"
     volumes:
       - ./lgtm-data:/data
+
+  inference-api:
+    build: inference-api
+    restart: unless-stopped
+    volumes:
+      - ./inference-api:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inference-api-router.entrypoints=web"
+      - "traefik.http.routers.inference-api-router.rule=PathPrefix(`/inference-api`)"
+      - "traefik.http.services.inference-api-service.loadbalancer.server.port=8000"
